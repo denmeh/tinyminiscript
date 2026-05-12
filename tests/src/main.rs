@@ -67,6 +67,11 @@ fn test_basic_scripts() {
         "sh(j:and_b(dv:0,su:0))",
         "sh(thresh(2,0,a:thresh(1,0,a:0,an:0,a:0)a:0))",
         "sh(0)#7h0w2xvg",
+
+        // Bare miniscript scripts
+        "and_v(v:pk(020513060604181215120913141616141318171817121906020906090318181704),pk(020606161514070203071418190717181303181315151817150717021304131309))",
+        "and_b(dv:0,su:0)",
+        "thresh(1,thresh(1,0))",
     ];
 
     for (i, script) in scripts.iter().enumerate() {

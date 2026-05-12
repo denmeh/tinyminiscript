@@ -401,7 +401,22 @@ pub(crate) fn parse<'a>(input: &'a str) -> Result<Context, ParseError<'a>> {
 
     let mut ctx = ParserContext::new(input);
 
-    let (root, top_level_descriptor) = parse_descriptor(&mut ctx)?;
+    // If the first token is a known descriptor keyword, parse as a descriptor expression.
+    // Otherwise fall back to parsing as a raw (Bare) miniscript expression so that inputs
+    // like `and_v(...)` are accepted by `Context::try_from` without requiring a descriptor
+    // wrapper.
+    let (root, top_level_descriptor) = match ctx.peek_token() {
+        Some((token, _)) if Descriptor::try_from(token).is_ok() => {
+            parse_descriptor(&mut ctx)?
+        }
+        Some(_) => {
+            let root = parse_internal(&mut ctx)?;
+            (root, Descriptor::Bare)
+        }
+        None => {
+            return Err(ParseError::UnexpectedEof { context: "parse" });
+        }
+    };
 
     // should be no more tokens
     let next_token = ctx.peek_token();
