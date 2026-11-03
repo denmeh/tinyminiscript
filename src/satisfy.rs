@@ -467,7 +467,7 @@ pub(crate) fn satisfy(
                     zero().set_malleable(x_pair.dsat.available && !x_pair.dsat.has_sig),
                     x_pair.sat,
                 )),
-                _ => return satisfy(ctx, satisfier, &ctx.get_node(*x)),
+                _ => Ok(x_pair),
             }
         }
         Fragment::MultiA { k, keys } => {
